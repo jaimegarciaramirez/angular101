@@ -1,0 +1,19 @@
+<div data-ng-controller="HomeController as home">
+    {{home.message}}
+    <h2>Login</h2>
+    <form>
+        <label for="username">User Id:</label>
+        <input type="text" id="username" data-ng-model="home.username" />
+
+        <button data-ng-click="home.login()">Login</button>
+    </form>
+    
+    <h2>Register</h2>
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" data-ng-model="home.email" />
+        
+        <button data-ng-click="home.register()">Register</button>
+    </div>
+    
+</div>

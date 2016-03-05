@@ -1,0 +1,16 @@
+<div data-ng-controller="TaskController as tasks">
+    <div>Printing out your tasks:</div>
+    
+    <div>
+        <label for="task">New Task</label>
+        <input type="text" id="task" data-ng-model="newTask" />
+        
+        <button data-ng-click="tasks.addTask(newTask)">Add task</button>
+    </div>
+    
+    <h2>First Task</h2>
+    <task data-task="tasks.tasks[0]"></task>
+    <h2>All tasks</h2>
+    <tasks data-tasks="tasks.tasks">
+    </tasks>
+</div>

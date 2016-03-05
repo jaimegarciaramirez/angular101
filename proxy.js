@@ -1,25 +1,32 @@
-var http = require('http'),
-    httpProxy = require('http-proxy');
-var proxy = new httpProxy.RoutingProxy();
+var http = require('http')
+var httpProxy = require('http-proxy')
+var express = require('express');
+var app = express();
 
-http.createServer(function (req, res) {
-  var buffer = httpProxy.buffer(req);
-  console.log(req.url);
-  res.setHeader('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-  if (req.url.indexOf("/api") == 0) {
-      req.url = req.url.replace(/\/api\//, "//");
-      console.log("    Rewriting to: " + req.url);
-      proxy.proxyRequest(req, res, {
-            port: 8080,
-            host: "localhost",
-            buffer: buffer
-       });
-  } else {
-  	  console.log("Going to localhost");
-	  proxy.proxyRequest(req, res, {
-	      port: 8081,
-	      host: 'localhost',
-	      buffer: buffer
-	  });
-  }
-}).listen(4242);
+app.use(express.static('public'));
+
+app.listen(8081, function () {
+  console.log('UI App is listening on port 8081!');
+});
+
+var proxy = httpProxy.createProxyServer()
+
+var server = http.createServer(function(request, response) {
+    if (request.url.indexOf('/api') == 0) {
+        request.url = request.url.substring(4)
+        console.log(request.url + " routed to 8080")
+        proxy.proxyRequest(request, response, {
+            target: "http://localhost:8080"
+        })
+    } else {
+        console.log(request.url + " routed to 8081")
+        proxy.proxyRequest(request, response, {
+            target: "http://localhost:8081"
+        })
+    }
+})
+
+server.listen(3000, function() {
+    console.log('Server is started on port 3000')
+})
+

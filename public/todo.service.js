@@ -3,7 +3,7 @@ angular.module('todo').factory('TodoService',
     
 function TodoService($http) {
     // private functions
-    var API_HOST = "http://localhost:8080";
+    var API_HOST = "/api";
     
     // public functions
     return {

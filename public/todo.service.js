@@ -23,15 +23,41 @@ function TodoService($http) {
         getUserTasks: function(userId) {
             return $http.get(API_HOST + '/user/' + userId + '/tasks')
                 .then(function(response) {
-                    return response.data;
+                    var tasks = response.data;
+                    tasks.sort(function(task1, task2) {
+                        if (task1.active && !task2.active) {
+                            return -1;
+                        } else if (!task1.active && task2.active) {
+                            return 1;
+                        } else if (task1.id < task2.id) {
+                            return -1;
+                        } else if (task1.id > task2.id) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    });
+                    return tasks;
                 });
         },
         createTask: function(userId, taskDescription) {
             return $http.post(API_HOST + '/user/' + userId + '/tasks', {
-                description: task
+                description: taskDescription
             }).then(function(response) {
                 return response.data;
             })
+        },
+        updateTask: function(newTask) {
+            return $http.put(API_HOST + '/tasks/' + newTask.id, newTask)
+                .then(function(response) {
+                    return response.data;
+                });
+        },
+        deleteTask: function(taskToDelete) {
+            return $http.delete(API_HOST + '/tasks/' + taskToDelete.id, taskToDelete)
+                .then(function(response) {
+                    return response.data;
+                });
         }
     }
 }

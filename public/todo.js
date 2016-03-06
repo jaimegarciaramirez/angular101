@@ -49,9 +49,9 @@ function HomeController($state, TodoService) {
 }
 
 angular.module('todo').controller('TaskController',
-    ['$stateParams', 'TodoService', TaskController]);
+    ['$stateParams', '$scope', 'TodoService', TaskController]);
 
-function TaskController($stateParams, TodoService) {
+function TaskController($stateParams, $scope, TodoService) {
     var that = this;
     console.log('Loading tasks with these parameters', $stateParams);
     
@@ -72,6 +72,23 @@ function TaskController($stateParams, TodoService) {
             console.log('error creating a task', error);
         })
     }
+    
+    $scope.$on('task-updated', function(event, newTask) {
+        console.log('Got the new task', newTask);
+        TodoService.updateTask(newTask).then(function(response) {
+            console.log('Save was actually succesful for', response);
+        }, function(error) {
+            console.log('Save failed', error);
+        })
+    })
+    
+    $scope.$on('task-deleted', function(event, deletedTask) {
+        console.log('Deleting task', deletedTask);
+        TodoService.deleteTask(deletedTask).then(function(response) {
+            that.loadTasks();
+            console.log('successfully deleted', deletedTask, response);
+        });
+    })
     
     that.loadTasks();
 }
